@@ -2,23 +2,30 @@ package com.ash.pokedex.presentation.screens.detail
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedSuggestionChip
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -31,9 +38,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.ash.pokedex.R
+import com.ash.pokedex.extension.isSuccessCatch
 import com.ash.pokedex.extension.replaceNewlineWithSpace
+import com.ash.pokedex.presentation.components.snackbar.SnackBarComponent
 import com.ash.pokedex.presentation.components.topbar.CenterTitleTopBar
 import com.ash.pokedex.viewmodel.PokemonDetailViewModel
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,6 +55,7 @@ fun PokemonDetailScreen(
     LaunchedEffect(key1 = Unit, block = {
         viewModel.getPokemonDetail(pokemonName)
     })
+    val scope = rememberCoroutineScope()
     val state by viewModel.pokemonDetailState.collectAsState(initial = PokemonDetailState())
     val speciesState by viewModel.pokemonSpeciesState.collectAsState(initial = PokemonSpeciesState())
     val painter =
@@ -57,12 +68,45 @@ fun PokemonDetailScreen(
                 .build(),
             contentScale = ContentScale.Crop,
         )
+    val snackBarHostState = remember { mutableStateOf(SnackbarHostState()) }
 
-    Scaffold(topBar = {
-        CenterTitleTopBar(pokemonName) {
-            onBack()
-        }
-    }) {
+    Scaffold(
+        snackbarHost = {
+            SnackBarComponent(
+                snackBarHostState = snackBarHostState.value,
+            )
+        },
+        topBar = {
+            CenterTitleTopBar(pokemonName) {
+                onBack()
+            }
+        }, bottomBar = {
+            Box(
+                modifier = Modifier
+                    .padding(vertical = 15.dp)
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                Button(onClick = {
+                    if (isSuccessCatch()) {
+                        scope.launch {
+                            snackBarHostState.value.showSnackbar(
+                                "Gotcha!"
+                            )
+                        }
+                    } else {
+                        scope.launch {
+                            snackBarHostState.value.showSnackbar(
+                                "The $pokemonName break free!"
+                            )
+                        }
+                    }
+
+                }) {
+                    Text(text = "Catch Pokemon")
+                }
+            }
+        }) {
         Column(
             Modifier.padding(vertical = it.calculateTopPadding(), horizontal = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally

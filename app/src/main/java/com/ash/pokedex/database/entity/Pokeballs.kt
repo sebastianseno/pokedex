@@ -6,8 +6,8 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class PokeBalls(
-    @PrimaryKey
-    val id: String,
+    @PrimaryKey(true)
+    val id: Int,
     val name: String,
     val renameCount: Int
 )
