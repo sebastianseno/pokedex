@@ -15,8 +15,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.ash.pokedex.navigation.addNavigationGraph
-import com.ash.pokedex.paging.Screen
-import com.ash.pokedex.presentation.theme.PokedexTheme
+import com.ash.pokedex.navigation.Screen
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -28,24 +27,22 @@ class MainActivity : ComponentActivity() {
             val navController: NavHostController = rememberNavController()
             val startingRoute = Screen.PokemonList.route
 
-            PokedexTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = MaterialTheme.colorScheme.background
+            ) {
+                NavHost(
+                    navController = navController,
+                    startDestination = startingRoute,
+                    modifier =
+                    Modifier
+                        .background(Color.White)
+                        .statusBarsPadding()
+                        .navigationBarsPadding(),
                 ) {
-                    NavHost(
-                        navController = navController,
-                        startDestination = startingRoute,
-                        modifier =
-                        Modifier
-                            .background(Color.White)
-                            .statusBarsPadding()
-                            .navigationBarsPadding(),
-                    ) {
-                        addNavigationGraph(
-                            navController,
-                        )
-                    }
+                    addNavigationGraph(
+                        navController,
+                    )
                 }
             }
         }

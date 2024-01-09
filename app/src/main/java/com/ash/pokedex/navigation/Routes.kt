@@ -1,4 +1,4 @@
-package com.ash.pokedex.paging
+package com.ash.pokedex.navigation
 
 sealed class Screen(val route: String) {
      object PokemonList : Screen("pokemon_list_screen")

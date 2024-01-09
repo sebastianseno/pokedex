@@ -28,14 +28,14 @@ fun CenterTitleTopBar(
             TopAppBarDefaults.centerAlignedTopAppBarColors(
                 containerColor = Color.Transparent,
             ),
-        title = { Text(text = title, color = Color.White) },
+        title = { Text(text = title, color = Color.Black) },
         navigationIcon = {
             Row(modifier = Modifier) {
                 Spacer(modifier = Modifier.width(25.dp))
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
                     contentDescription = null,
-                    tint = Color.White,
+                    tint = Color.Black,
                     modifier =
                         Modifier
                             .size(20.dp)
