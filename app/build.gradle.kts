@@ -1,4 +1,6 @@
-import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
+import java.io.FileInputStream
+import java.io.InputStreamReader
+import java.util.Properties
 
 plugins {
     id("com.android.application")
@@ -9,12 +11,12 @@ plugins {
 
 android {
     namespace = "com.ash.pokedex"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.ash.pokedex"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -25,23 +27,36 @@ android {
     }
 
     buildTypes {
+        debug {
+            val key = getLocalProperty("BASE_URL")
+
+            applicationIdSuffix = ".debug"
+            isDebuggable = true
+            isMinifyEnabled = false
+            isShrinkResources = false
+            buildConfigField("String", "BASE_URL", key)
+
+        }
         release {
+            val key = getLocalProperty("BASE_URL")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String", "BASE_URL", key)
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.3"
@@ -57,6 +72,7 @@ dependencies {
 
     val navVersion = "2.7.6"
     val retrofitVersion = "2.9.0"
+    val pagingVersion = "3.2.1"
 
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
@@ -87,8 +103,28 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation(platform("androidx.compose:compose-bom:2023.03.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+// Paging
+    implementation("androidx.paging:paging-runtime-ktx:$pagingVersion")
+    implementation("androidx.paging:paging-compose:$pagingVersion")
 
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
+}
+
+fun getLocalProperty(
+    key: String,
+    file: String = "app.properties",
+): String {
+    val properties = Properties()
+    val localProperties = File(file)
+    if (localProperties.isFile) {
+       InputStreamReader(FileInputStream(localProperties), Charsets.UTF_8).use { reader ->
+            properties.load(reader)
+        }
+    } else {
+        error("File $file not found")
+    }
+
+    return properties.getProperty(key)
 }
