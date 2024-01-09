@@ -7,7 +7,6 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.dagger.hilt.android")
     kotlin("kapt")
-
 }
 
 android {
@@ -74,6 +73,7 @@ dependencies {
     val navVersion = "2.7.6"
     val retrofitVersion = "2.9.0"
     val pagingVersion = "3.2.1"
+   val roomVersion = "2.5.2"
 
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
@@ -111,6 +111,8 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
+    implementation ("androidx.room:room-ktx:$roomVersion")
+    kapt("androidx.room:room-compiler:$roomVersion")
 }
 
 fun getLocalProperty(

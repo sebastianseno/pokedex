@@ -4,7 +4,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.ash.pokedex.presentation.screens.detail.PokemonDetailScreen
-import com.ash.pokedex.presentation.screens.PokemonListScreen
+import com.ash.pokedex.presentation.screens.list.PokemonListScreen
 
 fun NavGraphBuilder.addNavigationGraph(
     navController: NavController,

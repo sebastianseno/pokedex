@@ -1,25 +1,17 @@
-package com.ash.pokedex.presentation.screens
+package com.ash.pokedex.presentation.screens.list
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
-import com.ash.pokedex.R
 import com.ash.pokedex.presentation.components.cards.PokemonCards
 import com.ash.pokedex.viewmodel.PokemonListViewModel
-import java.util.UUID
 
 @Composable
 fun PokemonListScreen(
@@ -29,7 +21,9 @@ fun PokemonListScreen(
     val state = viewModel.pokemonListState.collectAsLazyPagingItems()
 
     LaunchedEffect(key1 = Unit, block = {
-        viewModel.getPokemonList()
+        if (state.itemCount == 0) {
+            viewModel.getPokemonList()
+        }
     })
     LazyVerticalGrid(
         columns = GridCells.Fixed(count = 3),
