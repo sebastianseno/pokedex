@@ -6,7 +6,7 @@ import retrofit2.http.Query
 
 interface PokemonServices {
 
-    @GET("v2/account/mobile/field-office/login")
+    @GET("v2/pokemon")
     suspend fun getPokemonList(
         @Query("offset") offset: Int?,
         @Query("limit") limit: Int
