@@ -1,6 +1,7 @@
 package com.ash.pokedex.presentation.screens.detail
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -25,13 +26,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.ash.pokedex.R
+import com.ash.pokedex.extension.replaceNewlineWithSpace
 import com.ash.pokedex.presentation.components.topbar.CenterTitleTopBar
 import com.ash.pokedex.viewmodel.PokemonDetailViewModel
-import com.ash.pokedex.viewmodel.PokemonListViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -44,11 +46,12 @@ fun PokemonDetailScreen(
         viewModel.getPokemonDetail(pokemonName)
     })
     val state by viewModel.pokemonDetailState.collectAsState(initial = PokemonDetailState())
+    val speciesState by viewModel.pokemonSpeciesState.collectAsState(initial = PokemonSpeciesState())
     val painter =
         rememberAsyncImagePainter(
             model =
             ImageRequest.Builder(LocalContext.current)
-                .data(state.data?.sprites?.frontDefault)
+                .data(state.data?.sprites?.other?.officialArtwork?.frontDefault)
                 .crossfade(false)
                 .placeholder(drawableResId = R.drawable.ic_launcher_foreground)
                 .build(),
@@ -60,7 +63,10 @@ fun PokemonDetailScreen(
             onBack()
         }
     }) {
-        Column(Modifier.padding(it), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            Modifier.padding(vertical = it.calculateTopPadding(), horizontal = 20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Spacer(modifier = Modifier.height(24.dp))
             Image(
                 modifier = Modifier.size(200.dp),
@@ -68,12 +74,22 @@ fun PokemonDetailScreen(
                 contentDescription = null
             )
             Spacer(modifier = Modifier.height(24.dp))
-            ElevatedSuggestionChip(onClick = { }, label = { Text(text = "") })
+            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                state.data?.types?.forEach {
+                    ElevatedSuggestionChip(
+                        onClick = { },
+                        label = { Text(text = it.type?.name.orEmpty()) })
+                }
+            }
+
             Spacer(modifier = Modifier.height(16.dp))
-            Text(text = "About", fontWeight = FontWeight.Bold)
+            Text(text = "About", fontWeight = FontWeight.Bold, fontSize = 14.sp)
             Spacer(modifier = Modifier.height(16.dp))
             Row(Modifier.height(48.dp)) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.weight(1f)) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.weight(1f)
+                ) {
                     Row(modifier = Modifier) {
                         Image(
                             painter = painterResource(id = R.drawable.ic_weight),
@@ -89,37 +105,48 @@ fun PokemonDetailScreen(
                         .fillMaxHeight()
                         .width(1.dp)
                 )
-                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.weight(1f)) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.weight(1f)
+                ) {
                     Row(modifier = Modifier) {
                         Image(
-                            painter = painterResource(id = R.drawable.ic_weight),
+                            painter = painterResource(id = R.drawable.ic_ruler),
                             contentDescription = null
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(text = "6.5", fontWeight = FontWeight.Bold)
+                        Text(text = state.data?.height.toString(), fontWeight = FontWeight.Bold)
                     }
-                    Text(text = "Weight", fontWeight = FontWeight.Thin)
+                    Text(text = "Height", fontWeight = FontWeight.Thin)
                 }
                 Divider(
                     modifier = Modifier
                         .fillMaxHeight()
                         .width(1.dp)
                 )
-                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.weight(1f)) {
-                    Row(modifier = Modifier) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_weight),
-                            contentDescription = null
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    if (!state.data?.abilities.isNullOrEmpty()) {
+                        Text(
+                            text = state.data?.abilities?.get(0)?.ability?.name.toString(),
+                            fontWeight = FontWeight.Bold
                         )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(text = "6.5", fontWeight = FontWeight.Bold)
                     }
-                    Text(text = "Weight", fontWeight = FontWeight.Thin)
+                    Text(text = "Moves", fontWeight = FontWeight.Thin)
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
-            Text(text = "Weight", fontWeight = FontWeight.Normal)
+            if (!speciesState.data?.flavorTextEntries.isNullOrEmpty()) {
+                Text(
+                    text = speciesState.data?.flavorTextEntries?.get(0)?.flavorText?.replaceNewlineWithSpace()
+                        ?: "",
+                    fontWeight = FontWeight.Normal
+                )
+            }
             Spacer(modifier = Modifier.height(16.dp))
+            Text(text = "Base Stats", fontWeight = FontWeight.Bold, fontSize = 14.sp)
 
         }
     }

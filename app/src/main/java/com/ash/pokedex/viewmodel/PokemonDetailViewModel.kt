@@ -7,6 +7,7 @@ import androidx.paging.cachedIn
 import com.ash.pokedex.globalstate.UiState
 import com.ash.pokedex.model.PokemonResult
 import com.ash.pokedex.presentation.screens.detail.PokemonDetailState
+import com.ash.pokedex.presentation.screens.detail.PokemonSpeciesState
 import com.ash.pokedex.repository.PokemonRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -27,6 +28,9 @@ class PokemonDetailViewModel @Inject constructor(
     private val _pokemonDetailState = MutableSharedFlow<PokemonDetailState>()
     val pokemonDetailState = _pokemonDetailState.asSharedFlow()
 
+    private val _pokemonSpeciesState = MutableSharedFlow<PokemonSpeciesState>()
+    val pokemonSpeciesState = _pokemonSpeciesState.asSharedFlow()
+
     fun getPokemonDetail(name: String) {
         pokemonRepository.getPokemonDetail(name).onEach { result ->
                 when (result) {
@@ -36,7 +40,7 @@ class PokemonDetailViewModel @Inject constructor(
 
                     is UiState.Success -> {
                         _pokemonDetailState.emit(PokemonDetailState(data = result.data))
-
+                        getPokemonSpecies((result.data?.id).toString() ?: "1")
                     }
 
                     is UiState.Error -> {
@@ -45,6 +49,27 @@ class PokemonDetailViewModel @Inject constructor(
                     }
                 }
             }.launchIn(viewModelScope)
+
+    }
+
+    fun getPokemonSpecies(id: String) {
+        pokemonRepository.getPokemonSpecies(id).onEach { result ->
+            when (result) {
+                is UiState.Loading -> {
+                    _pokemonSpeciesState.emit(PokemonSpeciesState(isLoading = true))
+                }
+
+                is UiState.Success -> {
+                    _pokemonSpeciesState.emit(PokemonSpeciesState(data = result.data))
+
+                }
+
+                is UiState.Error -> {
+                    _pokemonSpeciesState.emit(PokemonSpeciesState(error = result.errorMessage.orEmpty()))
+
+                }
+            }
+        }.launchIn(viewModelScope)
 
     }
 }

@@ -6,6 +6,7 @@ import androidx.paging.PagingData
 import com.ash.pokedex.globalstate.UiState
 import com.ash.pokedex.model.PokemonDetailResponse
 import com.ash.pokedex.model.PokemonResult
+import com.ash.pokedex.model.species.PokemonSpeciesResponse
 import com.ash.pokedex.paging.PokemonListMediator
 import com.ash.pokedex.services.PokemonServices
 import kotlinx.coroutines.flow.Flow
@@ -32,6 +33,18 @@ class PokemonRepository @Inject constructor(
             emit(UiState.Loading())
             runCatching {
                 services.getPokemonDetail(name)
+            }.onSuccess {
+                emit(UiState.Success(it))
+            }.onFailure {
+                emit(UiState.Error(message = it.message ?: "Something went wrong"))
+            }
+        }
+    }
+    fun getPokemonSpecies(id:String): Flow<UiState<PokemonSpeciesResponse>> {
+        return flow {
+            emit(UiState.Loading())
+            runCatching {
+                services.getPokemonSpecies(id)
             }.onSuccess {
                 emit(UiState.Success(it))
             }.onFailure {
