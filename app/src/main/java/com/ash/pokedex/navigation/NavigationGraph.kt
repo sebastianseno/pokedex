@@ -10,8 +10,8 @@ fun NavGraphBuilder.addNavigationGraph(
     navController: NavController,
 ) {
     composable(Screen.PokemonList.route) { from ->
-        PokemonListScreen() {
-
+        PokemonListScreen {
+            navController.navigate(Screen.PokemonDetail.route)
         }
     }
     composable(Screen.PokemonDetail.route) { from ->
