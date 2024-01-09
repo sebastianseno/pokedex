@@ -11,9 +11,8 @@ const val NETWORK_PAGE_SIZE = 500
 private const val INITIAL_LOAD_SIZE = 1
 
 class PokemonListMediator(
-    private val services: PokemonServices,
-
-    ) : PagingSource<Int, PokemonResult>() {
+    private val services: PokemonServices
+) : PagingSource<Int, PokemonResult>() {
     override fun getRefreshKey(state: PagingState<Int, PokemonResult>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
             val anchorPage = state.closestPageToPosition(anchorPosition)
@@ -24,7 +23,8 @@ class PokemonListMediator(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, PokemonResult> {
         return try {
             val position = params.key ?: INITIAL_LOAD_SIZE
-            val offset = if (params.key != null) ((position - 1) * NETWORK_PAGE_SIZE) + 1 else INITIAL_LOAD_SIZE
+            val offset =
+                if (params.key != null) ((position - 1) * NETWORK_PAGE_SIZE) + 1 else INITIAL_LOAD_SIZE
 
             val response = services.getPokemonList(
                 offset = offset,
