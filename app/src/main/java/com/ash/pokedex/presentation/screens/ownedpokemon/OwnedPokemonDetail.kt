@@ -167,13 +167,13 @@ fun OwnedPokemonDetail(
                             viewModel.deleteOwnedPokemonById(id)
                             scope.launch {
                                 snackBarHostState.value.showSnackbar(
-                                    "Success Release Pokemon!"
+                                    "Success to Release Pokemon!"
                                 )
                             }
                         } else {
                             scope.launch {
                                 snackBarHostState.value.showSnackbar(
-                                    "Failed Release Pokemon"
+                                    "Failed to Release Pokemon"
                                 )
                             }
                         }
