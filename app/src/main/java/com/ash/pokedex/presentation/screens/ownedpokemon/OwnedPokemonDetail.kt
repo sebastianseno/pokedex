@@ -39,6 +39,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.ash.pokedex.R
+import com.ash.pokedex.extension.isPrime
 import com.ash.pokedex.presentation.components.snackbar.SnackBarComponent
 import com.ash.pokedex.presentation.components.topbar.CenterTitleTopBar
 import com.ash.pokedex.utils.PokemonRenamer
@@ -76,13 +77,12 @@ fun OwnedPokemonDetail(
                 skipPartiallyExpanded = false
             ),
         )
+
     val keyword: MutableState<String> = remember { mutableStateOf("") }
     val renamePokemon: MutableState<String> = remember { mutableStateOf("") }
     val renameCountNumber: MutableState<Int> = remember { mutableIntStateOf(0) }
+    val ownedPokemon = viewModel.ownedPokemon.collectAsState()
 
-//    LaunchedEffect(key1 = pokemonDetailState, block = {
-//        renameCountNumber.value = pokemonDetailState?.renameCount ?: 0
-//    })
     fun collapseSheet() {
         scope.launch {
             sheetState.bottomSheetState.hide()
@@ -94,7 +94,12 @@ fun OwnedPokemonDetail(
             sheetState.bottomSheetState.expand()
         }
     }
-
+    
+    LaunchedEffect(key1 = ownedPokemon.value, block = {
+        if (ownedPokemon.value == ReleasePokemonState.Success){
+            onBack()
+        }
+    })
 
     BackHandler(sheetState.bottomSheetState.isVisible) {
         collapseSheet()
@@ -158,7 +163,20 @@ fun OwnedPokemonDetail(
                         Text(text = "Rename Pokemon")
                     }
                     OutlinedButton(onClick = {
-
+                        if (isPrime()) {
+                            viewModel.deleteOwnedPokemonById(id)
+                            scope.launch {
+                                snackBarHostState.value.showSnackbar(
+                                    "Success Release Pokemon!"
+                                )
+                            }
+                        } else {
+                            scope.launch {
+                                snackBarHostState.value.showSnackbar(
+                                    "Failed Release Pokemon"
+                                )
+                            }
+                        }
                     }) {
                         Text(text = "Release Pokemon")
                     }
@@ -178,7 +196,6 @@ fun OwnedPokemonDetail(
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(text = pokemonDetailState?.name.orEmpty())
-
             }
         }
     }

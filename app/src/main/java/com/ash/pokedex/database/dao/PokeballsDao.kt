@@ -18,5 +18,7 @@ interface PokeBallsDao {
     fun getOwnedPokemon(): Flow<List<PokeBalls>>
     @Query("SELECT * FROM PokeBalls WHERE id = :id")
     fun getOwnedPokemon(id: Int): Flow<PokeBalls>
+    @Query("DELETE FROM PokeBalls WHERE id = :id")
+    fun deleteOwnedPokemon(id: Int)
 
 }

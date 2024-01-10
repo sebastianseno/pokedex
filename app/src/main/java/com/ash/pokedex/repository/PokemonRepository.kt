@@ -88,12 +88,14 @@ class PokemonRepository @Inject constructor(
         )
     }
 
-
     fun getOwnedPokemon(): Flow<List<PokeBalls>> {
         return dao.getOwnedPokemon()
     }
 
     fun getOwnedPokemon(id: Int): Flow<PokeBalls> {
         return dao.getOwnedPokemon(id)
+    }
+    suspend fun deleteOwnedPokemon(id: Int) = withContext(Dispatchers.IO) {
+        dao.deleteOwnedPokemon(id)
     }
 }
