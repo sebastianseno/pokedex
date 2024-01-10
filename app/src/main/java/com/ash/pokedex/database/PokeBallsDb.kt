@@ -3,6 +3,7 @@ package com.ash.pokedex.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SimpleSQLiteQuery
+import com.ash.pokedex.database.dao.PokeBallsDao
 import com.ash.pokedex.database.entity.PokeBalls
 
 @Database(
@@ -14,6 +15,7 @@ import com.ash.pokedex.database.entity.PokeBalls
 )
 
 abstract class PokeBallsDb : RoomDatabase() {
+    abstract fun pokeBallDao(): PokeBallsDao
 
     fun clearAndResetAllTables() {
         // reset all auto-incrementalValues

@@ -93,6 +93,10 @@ fun PokemonDetailScreen(
                             snackBarHostState.value.showSnackbar(
                                 "Gotcha!"
                             )
+                            viewModel.insertNewPokemon(
+                                pokemonName,
+                                state.data?.sprites?.other?.officialArtwork?.frontDefault.orEmpty()
+                            )
                         }
                     } else {
                         scope.launch {
@@ -190,7 +194,6 @@ fun PokemonDetailScreen(
                 )
             }
             Spacer(modifier = Modifier.height(16.dp))
-            Text(text = "Base Stats", fontWeight = FontWeight.Bold, fontSize = 14.sp)
 
         }
     }

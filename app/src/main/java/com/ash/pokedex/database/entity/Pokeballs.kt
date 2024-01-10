@@ -9,5 +9,6 @@ data class PokeBalls(
     @PrimaryKey(true)
     val id: Int,
     val name: String,
+    val imageUrl: String,
     val renameCount: Int
 )
