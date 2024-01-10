@@ -12,6 +12,8 @@ interface PokeBallsDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertPokemon(obj: PokeBalls)
+    @Query("UPDATE PokeBalls SET name = :pokemonName, renameCount = :count  WHERE id = :id")
+    fun updatePokemonData(id: Int, pokemonName: String, count: Int)
     @Query("SELECT * from PokeBalls")
     fun getOwnedPokemon(): Flow<List<PokeBalls>>
     @Query("SELECT * FROM PokeBalls WHERE id = :id")

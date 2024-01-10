@@ -35,7 +35,7 @@ class PokemonRepository @Inject constructor(
         ).flow
     }
 
-    fun getPokemonDetail(name:String): Flow<UiState<PokemonDetailResponse>> {
+    fun getPokemonDetail(name: String): Flow<UiState<PokemonDetailResponse>> {
         return flow {
             emit(UiState.Loading())
             runCatching {
@@ -47,7 +47,8 @@ class PokemonRepository @Inject constructor(
             }
         }
     }
-    fun getPokemonSpecies(id:String): Flow<UiState<PokemonSpeciesResponse>> {
+
+    fun getPokemonSpecies(id: String): Flow<UiState<PokemonSpeciesResponse>> {
         return flow {
             emit(UiState.Loading())
             runCatching {
@@ -73,6 +74,20 @@ class PokemonRepository @Inject constructor(
             )
         )
     }
+
+    suspend fun updatePokemonData(
+        id: Int,
+        pokemonName: String,
+        renameCounter: Int,
+    ) = withContext(Dispatchers.IO) {
+        dao.updatePokemonData(
+            id,
+            pokemonName,
+            renameCounter
+
+        )
+    }
+
 
     fun getOwnedPokemon(): Flow<List<PokeBalls>> {
         return dao.getOwnedPokemon()

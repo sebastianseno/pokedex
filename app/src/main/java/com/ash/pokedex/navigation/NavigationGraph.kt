@@ -35,6 +35,8 @@ fun NavGraphBuilder.addNavigationGraph(
     }
     composable(Screen.OwnedPokemonDetail.route) { from ->
         val pokemonId = navController.receiveBundle<Int>("id")
-        OwnedPokemonDetail(id = pokemonId ?: 0)
+        OwnedPokemonDetail(id = pokemonId ?: 0) {
+            navController.popBackStack()
+        }
     }
 }

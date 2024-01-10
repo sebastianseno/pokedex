@@ -14,12 +14,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ash.pokedex.presentation.components.cards.OwnedPokemonCards
 import com.ash.pokedex.presentation.components.topbar.CenterTitleTopBar
-import com.ash.pokedex.viewmodel.OwnedPokemonListViewModel
+import com.ash.pokedex.viewmodel.OwnedPokemonViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OwnedPokemonList(
-    viewModel: OwnedPokemonListViewModel = hiltViewModel(),
+    viewModel: OwnedPokemonViewModel = hiltViewModel(),
     onClick: (Int) -> Unit
 ) {
     val ownedPokemon = viewModel.getOwnedPokemon.collectAsState(initial = null)
